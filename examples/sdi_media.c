@@ -131,20 +131,6 @@ t_std_error sdi_media_speed_get (sdi_resource_hdl_t resource_hdl,
 }
 
 /**
- * Checks whether the specified media is qualified by DELL or not
- * resource_hdl[in] - handle of the media resource
- * status[out]      - "true" if media is qualified by DELL else "false"
- * return           - standard t_std_error
- */
-t_std_error sdi_media_is_dell_qualified (sdi_resource_hdl_t resource_hdl,
-                                         bool *status)
-{
-    *status = false;            /* Valid, but dummy value */
-
-    return (STD_ERR_OK);
-}
-
-/**
  * Reads the requested parameter value from eeprom
  * resource_hdl[in] - handle of the media resource
  * param[in]        - parametr type that is of interest(e.g wavelength, maximum
@@ -187,20 +173,6 @@ t_std_error sdi_media_transceiver_code_get (sdi_resource_hdl_t resource_hdl,
                                             sdi_media_transceiver_descr_t *transceiver_info)
 {
     memset(transceiver_info, 0, sizeof(*transceiver_info)); /* Dummy values */
-
-    return (STD_ERR_OK);
-}
-
-/**
- * Read the dell product information
- * resource_hdl[in] - Handle of the resource
- * info[out] - dell product information
- * return - standard t_std_error
- */
-t_std_error sdi_media_dell_product_info_get (sdi_resource_hdl_t resource_hdl,
-                                             sdi_media_dell_product_info_t *info)
-{
-    memset(info, 0, sizeof(*info)); /* Dummy values */
 
     return (STD_ERR_OK);
 }

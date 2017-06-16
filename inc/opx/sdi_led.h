@@ -32,6 +32,8 @@
 #include "std_type_defs.h"
 #include "sdi_entity.h"
 
+#define SDI_MAX_DIGIT_DISPLAY_LED_LEN  1024
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -97,6 +99,24 @@ t_std_error sdi_digital_display_led_on(sdi_resource_hdl_t led_hdl);
  * @return - standard @ref t_std_error
  */
 t_std_error sdi_digital_display_led_off(sdi_resource_hdl_t led_hdl);
+
+ /**
+ * @brief get the value in the digital_display_led.
+ * @param[in] led_hdl  - handle of led
+ * @param[out] display_string - Pointer to the value displayed. 
+ * @param[in]  buf_size - size of allocated buffer. To ensure no overflow.
+ * @return - STD_ERR_OK on succes and standard error codes on failure.
+ * For all other errors, refer @ref t_std_error
+ */
+t_std_error sdi_digital_display_led_get(sdi_resource_hdl_t led_hdl, char *display_string, size_t buf_size);
+
+ /**
+ * @brief Get the state (on or off) of the digital_display_led.
+ * @param[in] led_hdl - handle of display led
+ * @param[out] state - state of display led (on or off)
+ * @return - standard @ref t_std_error
+ */
+t_std_error sdi_digital_display_led_get_state(sdi_resource_hdl_t led_hdl, bool *state);
 
 /**
  * @}

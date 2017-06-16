@@ -110,6 +110,13 @@ typedef enum {
     /** Resource for NVRAM
       * @ref sdi_nvram_api **/
     SDI_RESOURCE_NVRAM,
+    /** Resource for Comm_Dev
+     *  @ref sdi_comm_dev_api *   */
+    SDI_RESOURCE_COMM_DEV,
+    /** Resource for Host System
+     *  @ref sdi_host_system_api *   */
+    SDI_RESOURCE_HOST_SYSTEM,
+
     SDI_RESOURCE_MAX            /* Always last */
 } sdi_resource_type_t;
 

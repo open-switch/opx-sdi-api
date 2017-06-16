@@ -89,11 +89,6 @@ extern "C" {
 #define SDI_MEDIA_MAX_VENDOR_DATE_LEN           9
 
 /**
- * @def SDI_MEDIA_DELL_PRODUCT_INFO_SIZE
- * Media product information size
- */
-#define SDI_MEDIA_DELL_PRODUCT_INFO_SIZE        7
-/**
  * @}
  */
 
@@ -309,6 +304,38 @@ typedef enum {
      * SDI MEDIA Speed is 100G
      */
     SDI_MEDIA_SPEED_100G,
+    /**
+     * SDI MEDIA Speed is 20G
+     */
+    SDI_MEDIA_SPEED_20G,
+    /**
+     * SDI MEDIA Speed is 50G
+     */
+    SDI_MEDIA_SPEED_50G,
+    /**
+     * SDI MEDIA Speed is 200G
+     */
+    SDI_MEDIA_SPEED_200G,
+    /**
+     * SDI MEDIA Speed is 400G
+     */
+    SDI_MEDIA_SPEED_400G,
+    /**
+     * SDI MEDIA Speed is 4GFC
+     */
+    SDI_MEDIA_SPEED_4GFC,
+    /**
+     * SDI MEDIA Speed is 8GFC
+     */
+    SDI_MEDIA_SPEED_8GFC,
+    /**
+     * SDI MEDIA Speed is 16GFC
+     */
+    SDI_MEDIA_SPEED_16GFC,
+    /**
+     * SDI MEDIA Speed is 32GFC
+     */
+    SDI_MEDIA_SPEED_32GFC,
 }sdi_media_speed_t;
 
 /**
@@ -414,6 +441,9 @@ typedef enum {
     /** Extended transceiver Code for electronic or optical compatibility
      * for SFP */
     SDI_MEDIA_EXT_COMPLIANCE_CODE,
+    /** Free Side device properties this field is not applicable for SFP
+     */
+    SDI_FREE_SIDE_DEV_PROP,
 } sdi_media_param_type_t;
 
 /**
@@ -432,7 +462,7 @@ typedef enum {
     /** SDI MEDIA Part number provided by vendor(ASCII)*/
     SDI_MEDIA_VENDOR_PN,
     /** SDI MEDIA Revision level for part number provided by vendor(ASCII)*/
-    SDI_MEDIA_VENDOR_REVISION,
+    SDI_MEDIA_VENDOR_REVISION
 } sdi_media_vendor_info_type_t;
 
 /**
@@ -504,20 +534,6 @@ typedef enum {
     SDI_MEDIA_RX_PWR_AVG,
 } sdi_media_rx_pwr_type_t;
 
-/*
- * @struct sdi_media_dell_product_info_t
- * maps to the xSFP DELL Product Identification data.
- * Refer section 2.2 for SFP+ and section 2.3 for QSFP in Optics EEPROM document
- * http://force10.dell.com/npf/Platform Dependent Hardware/eleceng/compeng/Optics Documents/006-00041-00_RO.pdf
- */
-typedef struct {
-    uint8_t magic_key0; /**< Dell force10 magic key lower byte*/
-    uint8_t magic_key1; /**< Dell force10 magic key higher byte*/
-    uint8_t revision;   /**< revision of the module*/
-    uint8_t product_id[2]; /**< Used to identify the wavelength and distance */
-    uint8_t reserved[2]; /**< reserved for future use */
-} sdi_media_dell_product_info_t;
-
 /**
  * @enum sdi_qsfp_eth_1040g_code_bitmask_t
  * 10/40G Ethernet compliance codes
@@ -558,6 +574,10 @@ typedef enum {
     QSFP_100GBASE_PSM4_IR = 0x7,
     /** 100GBASE-CR4 */
     QSFP_100GBASE_CR4 = 0xb,
+    /** 2x50Gbase/4x25Gbase CR_CAS */
+    QSFP28_BRKOUT_CR_CAS = 0xc,
+    /** 2x50Gbase/4x25Gbase CR_CAN */
+    QSFP28_BRKOUT_CR_CAN = 0xd,
 } sdi_qsfp28_eth_code_bitmask_t;
 
 /**
@@ -1048,15 +1068,6 @@ t_std_error sdi_media_cdr_status_get (sdi_resource_hdl_t resource_hdl,
 t_std_error sdi_media_speed_get (sdi_resource_hdl_t resource_hdl, sdi_media_speed_t *speed);
 
 /**
- * @brief Check whether the specified media resource is dell qualified.
- * @param[in] resource_hdl - handle of the media resource that is of interest.
- * @param[out] status - true if optics is dell qualified else false
- * @return - standard @ref t_std_error
- */
-t_std_error sdi_media_is_dell_qualified (sdi_resource_hdl_t resource_hdl,
-                                         bool *status);
-
-/**
 * @brief Reads the parameter value from eeprom
 * @param[in] resource_hdl - handle of the media resource
 * @param[in] param_type - parameter type. Refer @ref sdi_media_param_type_t for
@@ -1092,16 +1103,6 @@ t_std_error sdi_media_vendor_info_get (sdi_resource_hdl_t resource_hdl,
  */
 t_std_error sdi_media_transceiver_code_get (sdi_resource_hdl_t resource_hdl,
                                             sdi_media_transceiver_descr_t *transceiver_info);
-
-/**
- * @brief Get the dell product information
- * @param[in] resource_hdl - Handle of the resource
- * @param[out] info - Dell product Identification data
- * @return - standard @ref t_std_error
- */
-t_std_error sdi_media_dell_product_info_get (sdi_resource_hdl_t resource_hdl,
-                                             sdi_media_dell_product_info_t *info);
-
 
 /**
  * @brief Get the inforamtion of whether optional features supported or not on a
@@ -1284,6 +1285,47 @@ t_std_error sdi_media_phy_mode_set (sdi_resource_hdl_t resource_hdl,
 t_std_error sdi_media_phy_speed_set (sdi_resource_hdl_t resource_hdl,
                                      uint_t channel, sdi_media_type_t type,
                                      sdi_media_speed_t *speed, uint_t count);
+/**
+ * @brief Api to get phy link status .
+ * @param[in] resource_hdl - handle to media
+ * @param[in] channel - channel number that is of interest. channel numbers
+ * should start with 0(e.g. For qsfp valid channel number range is 0 to 3) and
+ * channel number should be '0' if only one channel is present
+ * @param[in] type - media type which is present in front panel port
+ * @param[out] status - fill with "true" if link is up else "false"
+ * @return - standard @ref t_std_error
+ *
+ */
+t_std_error sdi_media_phy_link_status_get (sdi_resource_hdl_t resource_hdl, uint_t channel,
+                                           sdi_media_type_t type, bool *status);
+
+/**
+ * @brief Api to control media phy and MAC interfaces power down enable/disable .
+ * @param[in] resource_hdl - handle to media
+ * @param[in] channel - channel number that is of interest. channel numbers
+ * should start with 0(e.g. For qsfp valid channel number range is 0 to 3) and
+ * channel number should be '0' if only one channel is present
+ * @param[in] type - media type which is present in front panel port
+ * @param[in] enable - true - power down media phy, false - power up media phy
+ * @return - standard @ref t_std_error
+ *
+ */
+t_std_error sdi_media_phy_power_down_enable (sdi_resource_hdl_t resource_hdl, uint_t channel,
+                                             sdi_media_type_t type, bool enable);
+
+/**
+ * @brief Api to enable/disable Fiber/Serdes transmitter and receiver .
+ * @param[in] resource_hdl - handle to media
+ * @param[in] channel - channel number that is of interest. channel numbers
+ * should start with 0(e.g. For qsfp valid channel number range is 0 to 3) and
+ * channel number should be '0' if only one channel is present
+ * @param[in] type - media type which is present in front panel port
+ * @param[in] enable - true - enable serdes, false - disable serdes
+ * @return - standard @ref t_std_error
+ *
+ */
+t_std_error sdi_media_phy_serdes_control (sdi_resource_hdl_t resource_hdl, uint_t channel,
+                                          sdi_media_type_t type, bool enable);
 
 /*
  * @brief initialize pluged in module

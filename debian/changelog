@@ -1,3 +1,12 @@
+opx-sdi-api (4.12.0) unstable; urgency=medium
+
+  * Feature: Support for additional port speeds
+  * Feature: Support for additional optical media types
+  * Feature: Additional vendor hardware support
+  * Bugfix: Miscellaneous bug fixes
+
+ -- Dell EMC <ops-dev@lists.openswitch.net>  Fri, 16 Jun 2017 14:40:26 -0800
+
 opx-sdi-api (1.0.1) unstable; urgency=medium
 
   * Initial release.
