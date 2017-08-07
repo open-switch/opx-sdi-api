@@ -5,4 +5,4 @@ The implementations of the API can be platform-specific and are stored in separa
 
 The `examples` directory provides a stub library implementation.  
 
-(c) 2017 Dell EMC
+© 2017 Dell EMC
